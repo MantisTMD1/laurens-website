@@ -98,7 +98,8 @@ export function once(el, fn, { threshold = 0.35, margin = '0px', rescue = 3000 }
 }
 
 export function split(el, unit = 'words') {
-  if (!el.getAttribute('aria-label')) el.setAttribute('aria-label', el.textContent.replace(/\s+/g, ' ').trim());
+  // screen readers get the sentence once, from a visually hidden copy (aria-label is not allowed on a <p>)
+  const said = el.getAttribute('aria-label') ? null : el.textContent.replace(/\s+/g, ' ').trim();
   const inners = [];
   const wrap = (text, cls) => {
     const s = document.createElement('span');
@@ -134,6 +135,7 @@ export function split(el, unit = 'words') {
   };
   walk(el);
   el.querySelectorAll('.mo-w').forEach(w => w.setAttribute('aria-hidden', 'true'));
+  if (said) { const sr = document.createElement('span'); sr.className = 'sr-only'; sr.textContent = said; el.append(sr); }
   return inners;
 }
 

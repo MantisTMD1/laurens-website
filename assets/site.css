@@ -312,3 +312,8 @@ h1, h2 { font-optical-sizing: auto; text-wrap: balance; }
 @media (max-width: 639px) {
   main > section.hero--photo > .wrap { border-radius: 24px; padding-bottom: var(--s-5); }
 }
+
+/* word highlight: the words still to light up stay readable (4.5:1 contrast), just dimmer than the lit ones */
+main .mo-wh .mo-w { color: color-mix(in oklab, var(--ink) var(--wh-dim, 66%), var(--bg)); }
+main .mo-wh .mo-w.is-on { color: var(--ink); }
+main .mo-wh strong .mo-w.is-on { color: var(--accent); }
