@@ -1,0 +1,314 @@
+/* Fit Lab Wisconsin: palette and page CSS shared by every page */
+:root {
+  --p-bg: #f6f2ee; --p-surface: #ebe4ea; --p-ink: #2a2229; --p-muted: #6b6468;
+  --p-accent: #73458a; --p-accent-ink: #f6f2ee; --p-action: #73458a; --p-action-ink: #f6f2ee;
+  --p-inv-bg: #2a2229; --p-inv-surface: #362e35; --p-inv-ink: #f6f2ee; --p-inv-muted: #a29c9d;
+  --p-inv-accent: #f6f2ee; --p-inv-accent-ink: #2a2229; --p-inv-action: #f6f2ee; --p-inv-action-ink: #2a2229;
+  --font-display: "Bricolage Grotesque", "Figtree", system-ui, sans-serif;
+  --font-text: "Figtree", system-ui, sans-serif;
+  --display-weight: 600;
+  --display-tracking: -0.02em;
+  --display-tracking-xl: -0.03em;
+}
+/* Fit Lab's second colour, the sage of the old site's buttons, as the one dark band and the footer */
+:root { --p-inv-bg: #2f3b33; --p-inv-surface: #3a473e; --p-inv-muted: #b5bdb6; }
+
+.nav__logo img { height: 52px; width: auto; }
+.footer .nav__logo img { height: 72px; }
+/* the photo hero with data-box="none": below 1024 the words sit on the page ground, so they take its ink
+   (layout.css's own reset loses to the dark-tone rule's higher specificity) */
+@media (max-width: 1023px) {
+  .hero--photo[data-box="none"][data-tone="dark"] { color: var(--p-ink); --ink: var(--p-ink); --muted: var(--p-muted);
+    --line: color-mix(in oklab, var(--p-ink) 11%, transparent); --line-strong: color-mix(in oklab, var(--p-ink) 20%, transparent); }
+}
+/* split photographs (picture-develops in #training, the reviews photograph): as tall as the words beside them */
+.split-photo { margin: 0; border-radius: var(--r-lg); overflow: hidden; align-self: stretch; min-height: 360px; position: relative; }
+.split-photo > img { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: cover; object-position: var(--pos, 50% 35%); }
+@media (max-width: 1023px) { .split-photo { min-height: 0; aspect-ratio: 16 / 10; margin-top: var(--s-6); } }
+/* the three photographs of Lauren at work */
+.trio { margin-top: var(--s-7); }
+.trio__photo { aspect-ratio: 1; border-radius: var(--r-lg); overflow: hidden; margin: 0; }
+.trio__photo img { display: block; width: 100%; height: 100%; object-fit: cover; }
+@media (max-width: 639px) { .trio__photo:first-child { grid-column: 1 / -1; aspect-ratio: 16 / 10; } .trio__photo:first-child img { object-position: 50% 30%; } }
+/* phone: taller photographs so each two-screen section is filled */
+@media (max-width: 639px) {
+  .split-photo { aspect-ratio: 4 / 3; }
+  #gyms .tile__media { aspect-ratio: 4 / 3; }
+}
+/* tablet (640 to 1023): keep each section on one screen */
+@media (min-width: 640px) and (max-width: 1023px) {
+  #lauren .trio > .trio__photo { grid-column: auto / span 4; }
+  .split-photo { aspect-ratio: 21 / 9; }
+  #start .grid > .span-5 { grid-column: 1 / span 5; }
+  #start .grid > .form { grid-column: 6 / -1; padding: var(--s-6); }
+  #start .book-photo { aspect-ratio: 4 / 5; }
+}
+/* the two Google maps */
+.map-card { display: grid; gap: var(--s-4); align-content: start; }
+.map-frame { display: block; width: 100%; aspect-ratio: 4 / 3; border: 0; border-radius: var(--r-lg); background: var(--surface); }
+@media (min-width: 640px) and (max-width: 1023px) { #map .maps > .map-card { grid-column: auto / span 6; } #map .map-frame { aspect-ratio: 4 / 5; } }
+@media (max-width: 639px) { #map .maps > .map-card { grid-column: 1 / -1; } #map .map-frame { aspect-ratio: 4 / 3; } }
+/* spacing: every section after the hero is as tall as its content, with one even padding, so the gaps
+   between sections match at every width (instead of each section being forced to one or two screens) */
+:root { --sec-y: 104px; }
+@media (max-width: 1023px) { :root { --sec-y: 88px; } }
+@media (max-width: 639px) { :root { --sec-y: 64px; } }
+main > section.section:not(.hero) { height: auto; min-height: 0; padding: var(--sec-y) 0; display: block; }
+main > section.section:not(.hero) > .wrap { height: auto; }
+/* two neighbours on the same ground: the gap is one padding, not two */
+main > section.section:not(.hero):not(.ground-inverse) + section.section:not(.ground-inverse) { padding-top: 0; }
+#lauren + section.section { padding-top: var(--sec-y); }
+footer.footer { margin-top: 0; }
+.hero--photo .hero__facts > div { grid-column: auto / span 4; }
+.reviews .rows > li { display: block; }
+.reviews .rows > li > span { display: block; margin-top: var(--s-2); color: var(--muted); }
+#gyms .tile { grid-template-rows: auto auto 1fr auto; }
+.form { background: var(--surface); padding: var(--s-7); border-radius: var(--r-lg); }
+@media (max-width: 639px) { .form { padding: var(--s-5); } }
+.book-photo { margin: var(--s-6) 0 0; border-radius: var(--r-lg); overflow: hidden; aspect-ratio: 4 / 3; }
+.book-photo img { width: 100%; height: 100%; object-fit: cover; }
+/* scroll reveals (assets/reveal.js): fade and rise once; photos settle from a slight zoom */
+html.js-reveal [data-reveal] { opacity: 0; translate: 0 22px; transition: opacity 700ms cubic-bezier(.2,.7,.2,1), translate 800ms cubic-bezier(.2,.7,.2,1); transition-delay: calc(var(--i, 0) * 90ms); }
+html.js-reveal [data-reveal].is-in { opacity: 1; translate: 0 0; }
+html.js-reveal [data-reveal] img { scale: 1.08; transition: scale 1400ms cubic-bezier(.2,.7,.2,1); transition-delay: calc(var(--i, 0) * 90ms); }
+html.js-reveal [data-reveal].is-in img { scale: 1; }
+@media (prefers-reduced-motion: reduce) { html.js-reveal [data-reveal], html.js-reveal [data-reveal] img { opacity: 1; translate: none; scale: none; transition: none; } }
+@media print { html.js-reveal [data-reveal] { opacity: 1; translate: none; } }
+
+/* ---------- About page ---------- */
+.about-hero .hero__media img { object-position: var(--ly-pos, 50% 12%); }
+/* below 1024 the split hero stacks: a fixed shape for the photo, never a leftover strip that trims her head */
+@media (max-width: 1023px) {
+  main > section.about-hero { height: auto; min-height: 0; padding-bottom: var(--sec-y); }
+  main > section.about-hero > .wrap { height: auto; }
+  .about-hero .hero__media { flex: none; aspect-ratio: 4 / 3; min-height: 0; }
+  .about-hero .hero__media img { object-position: var(--ly-pos-phone, var(--ly-pos, 50% 10%)); }
+}
+@media (max-width: 639px) { .about-hero .hero__media { aspect-ratio: 1; } }
+.about-facts { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-5); margin-top: var(--s-7); padding-top: var(--s-5); border-top: 1px solid var(--line); }
+.about-facts dt { font-size: var(--t-small); color: var(--muted); }
+.about-facts dd { margin: var(--s-1) 0 0; }
+.about-copy > * + * { margin-top: var(--s-4); }
+.about-copy > h2 + * { margin-top: var(--s-5); }
+.about-copy > .rows { margin-top: var(--s-6); }
+.about-statement { font-family: var(--font-display); font-weight: var(--display-weight); letter-spacing: var(--display-tracking); font-size: clamp(1.5rem, 1.1rem + 1.6vw, 2.25rem); line-height: 1.25; max-width: 980px; margin-top: var(--s-6); text-wrap: pretty; }
+.about-cols { margin-top: var(--s-8); row-gap: var(--s-6); }
+.about-cols h3 { margin-bottom: var(--s-3); }
+.about-cols p { color: var(--muted); }
+.about-creds small { display: block; margin-top: var(--s-1); color: var(--muted); font-size: var(--t-small); }
+.about-book { display: grid; grid-template-columns: 1fr 1fr; background: var(--surface); border-radius: var(--r-lg); overflow: hidden; }
+.about-book__text { padding: var(--s-8); align-self: center; }
+.about-book__text .t-lead { margin-top: var(--s-4); }
+.about-book__text .btn-row { margin-top: var(--s-6); }
+.about-book__photo { margin: 0; min-height: 360px; position: relative; }
+.about-book__photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 40%; }
+@media (min-width: 640px) and (max-width: 1023px) {
+  #story .grid > *, #life .grid > *, #certifications .grid > * { grid-column: 1 / -1; }
+  .about-cols > .span-4 { grid-column: auto / span 4; }
+  .about-book__text { padding: var(--s-6); }
+}
+@media (max-width: 639px) {
+  .about-facts { grid-template-columns: 1fr; }
+  .about-book { grid-template-columns: 1fr; }
+  .about-book__text { padding: var(--s-5); }
+  .about-book__photo { min-height: 0; aspect-ratio: 4 / 3; order: -1; }
+  #certifications .rows { margin-top: var(--s-5); }
+}
+@media (max-width: 1023px) {
+  #life .about-portrait { margin-top: 0; }
+  #life .about-copy { margin-top: var(--s-6); }
+}
+@media (min-width: 640px) and (max-width: 1023px) {
+  #story .split-photo { aspect-ratio: 16 / 10; }
+  #life .about-portrait { aspect-ratio: 4 / 3; }
+}
+@media (max-width: 1023px) { #certifications .rows { margin-top: var(--s-5); } }
+
+/* home hero (desktop): the photograph starts under the nav bar, so the bar never covers the top of her head */
+@media (min-width: 1024px) {
+  .hero--photo > .hero__bg { top: var(--nav, 72px); height: calc(100% - var(--nav, 72px)); }
+}
+/* the NASM badge under the Certifications heading */
+/* assets/img/nasm-badge.png: Lauren's badge with its white square cut away (white lettering kept) */
+.about-badge { display: block; width: 200px; margin-top: var(--s-6); }
+.about-badge img { display: block; width: 100%; height: auto; }
+@media (max-width: 639px) { .about-badge { width: 160px; margin-top: var(--s-5); } }
+
+/* ---------- Benefits page (reuses the About parts) ---------- */
+.about-more { margin-top: var(--s-7); }
+#coaching .about-copy > h3 { margin-top: var(--s-6); }
+#coaching .about-copy > h3 + p { margin-top: var(--s-2); }
+.benefit-grid { row-gap: var(--s-7); }
+.about-copy .rows small { display: block; margin-top: var(--s-1); color: var(--muted); font-size: var(--t-small); }
+@media (max-width: 1023px) {
+  .stack-tablet > * { grid-column: 1 / -1; }
+  .stack-tablet > .split-photo:first-child { margin-top: 0; }
+  .stack-tablet > .split-photo:first-child + .about-copy { margin-top: var(--s-6); }
+}
+@media (min-width: 640px) and (max-width: 1023px) {
+  .benefit-grid > .span-4 { grid-column: auto / span 6; }
+  #coaching .split-photo { aspect-ratio: 16 / 10; }
+  #everyday .split-photo { aspect-ratio: 16 / 10; }
+}
+
+/* ---------- Testimonials page ---------- */
+.feature-quote { font-size: clamp(1.75rem, 1.2rem + 2vw, 2.75rem); line-height: 1.15; text-wrap: balance; }
+.quote-name { font-weight: 600; margin-top: var(--s-5) !important; }
+.quote-name::before { content: ""; display: inline-block; width: 24px; height: 1px; background: currentColor; vertical-align: middle; margin-right: var(--s-3); opacity: .5; }
+.quote-wall { columns: 3 300px; column-gap: var(--s-5); margin-top: var(--s-7); }
+.quote-card { break-inside: avoid; margin: 0 0 var(--s-5); padding: var(--s-6); background: var(--surface); border-radius: var(--r-lg); }
+.quote-card blockquote { margin: 0; font-size: 1.0625rem; line-height: 1.6; }
+.quote-card figcaption { margin-top: var(--s-4); font-size: var(--t-small); color: var(--muted); }
+@media (max-width: 639px) { .quote-card { padding: var(--s-5); } }
+
+/* ---------- Pricing page ---------- */
+main > section.section.price-head:not(.hero) { padding-top: calc(var(--nav, 72px) + var(--sec-y)); }
+.price-head h1 { font-size: clamp(2.25rem, 1.4rem + 3vw, 3.75rem); line-height: 1.05; letter-spacing: var(--display-tracking-xl); text-wrap: balance; }
+.price-head .t-lead { margin-top: var(--s-5); }
+.price-discount { align-self: end; margin: 0; padding: var(--s-5); background: var(--surface); border-radius: var(--r-lg); }
+.price-discount strong { display: block; font-size: 1.25rem; font-weight: 600; color: var(--accent); margin-bottom: var(--s-2); }
+.gym-switch { display: inline-flex; width: fit-content; gap: 4px; padding: 4px; margin-top: var(--s-8); background: var(--surface); border-radius: 999px; }
+.gym-switch[hidden] { display: none; }
+.gym-switch button { font: inherit; font-weight: 500; border: 0; background: transparent; color: var(--ink); padding: 10px 22px; border-radius: 999px; cursor: pointer; transition: background-color 200ms ease, color 200ms ease; }
+.gym-switch button:hover { background: color-mix(in oklab, var(--ink) 6%, transparent); }
+.gym-switch button[aria-selected="true"] { background: var(--action); color: var(--action-ink); }
+.gym-switch button:focus-visible { outline: 2px solid var(--action); outline-offset: 2px; }
+.gym-panel { margin-top: var(--s-7); }
+.gym-panel + .gym-panel { margin-top: var(--s-9, 96px); }
+.gym-switch:not([hidden]) ~ .gym-panel + .gym-panel { margin-top: var(--s-7); }
+.gym-panel[hidden] { display: none; }
+.gym-panel__title { font-size: var(--t-h3, 1.5rem); }
+.gym-panel__title .muted { display: block; font-size: var(--t-small); margin-top: var(--s-2); letter-spacing: 0; }
+.plan-grid { margin-top: var(--s-6); row-gap: var(--s-5); }
+.plan-grid .card--plan { display: flex; flex-direction: column; }
+.plan-grid .card--plan .rows { flex: 1; }
+.plan-grid .card--plan .btn { margin-top: var(--s-5); }
+.plan-note { color: var(--muted); font-size: var(--t-small); margin-top: var(--s-2); }
+.plan-grid .rows small { display: block; margin-top: 2px; color: var(--muted); font-size: var(--t-small); }
+.gym-panel:not([hidden]) { animation: gym-in 360ms cubic-bezier(.2,.7,.2,1); }
+@keyframes gym-in { from { opacity: 0; translate: 0 10px; } }
+@media (prefers-reduced-motion: reduce) { .gym-panel:not([hidden]) { animation: none; } }
+.services-contact p + p { margin-top: var(--s-2); }
+@media (max-width: 1023px) {
+  .price-head .grid > * { grid-column: 1 / -1; }
+  .price-discount { margin-top: var(--s-6); }
+  .plan-grid > .card--plan { grid-column: 1 / -1; }
+}
+@media (min-width: 640px) and (max-width: 1023px) {
+  .plan-grid > .card--plan { grid-column: auto / span 6; }
+  .plan-grid > .card--plan:last-child { grid-column: 1 / -1; }
+}
+@media (max-width: 639px) { .gym-switch { display: flex; } .gym-switch button { flex: 1; padding: 10px 12px; } }
+
+/* ---------- Client login page ---------- */
+.login-layout { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); grid-template-areas: "head card" "more card"; column-gap: clamp(32px, 8vw, 128px); align-items: start; }
+.login__head { grid-area: head; } .login__intro { grid-area: more; } .login-card { grid-area: card; }
+.login__head .t-lead { margin-top: var(--s-5); }
+.login__list { margin-top: var(--s-6); }
+.login__list small { display: block; margin-top: 2px; color: var(--muted); font-size: var(--t-small); }
+.login-card { padding: var(--s-7); background: var(--surface); border-radius: var(--r-lg); }
+.login-card h2 { font-size: var(--t-h3, 1.5rem); }
+.login-card > p { margin-top: var(--s-3); color: var(--muted); }
+.login-card__btn { width: 100%; justify-content: center; margin-top: var(--s-5); }
+.login-card__small { font-size: var(--t-small); text-align: center; margin-top: var(--s-4) !important; }
+.login-card__divider { display: flex; align-items: center; gap: var(--s-3); margin: var(--s-7) 0 var(--s-2); font-weight: 600; }
+.login-card__divider::before, .login-card__divider::after { content: ""; flex: 1; height: 1px; background: var(--line-strong, var(--line)); }
+.login-card__small a { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
+@media (max-width: 1023px) { .login-layout { grid-template-columns: 1fr; grid-template-areas: "head" "card" "more"; } .login-card { margin: var(--s-6) 0 var(--s-7); } .login__list { margin-top: 0; } }
+@media (max-width: 639px) { .login-card { padding: var(--s-5); } }
+/* compact plan cards: tighter padding and rows, per-session cost on the package's own line */
+.plan-grid { column-gap: var(--s-4); }
+.plan-grid .card--plan { padding: var(--s-5); gap: var(--s-3); }
+.plan-grid .card--plan h3 { font-size: 1.0625rem; }
+.plan-grid .plan-note { margin-top: 0; font-size: 0.8125rem; line-height: 1.45; }
+.plan-grid .rows > li { padding-block: 9px; font-size: 0.9375rem; align-items: baseline; }
+.plan-grid .rows > li:first-child { padding-top: 4px; }
+.plan-grid .rows small { display: inline; margin: 0 0 0 6px; font-size: 0.75rem; }
+.plan-grid .rows small::before { content: "· "; }
+.plan-grid .card--plan .btn { margin-top: var(--s-3); height: 40px; font-size: 0.9375rem; }
+@media (max-width: 639px) { .plan-grid .card--plan { padding: var(--s-4) var(--s-5) var(--s-5); } }
+
+/* footer social icons: centred in their circles at every size (the kit's touch rule made them flex rows
+   that pushed the icon to the left edge), lined up with the copyright line */
+.footer__legal { align-items: center; }
+.footer__legal .socials { gap: var(--s-3); }
+.footer__legal .socials a { display: inline-grid; place-items: center; justify-content: center; width: 40px; height: 40px; padding: 0; border-color: var(--line-strong, var(--line)); transition: border-color 200ms ease, background-color 200ms ease, color 200ms ease; }
+.footer__legal .socials a:hover { background: var(--action); border-color: var(--action); color: var(--action-ink); }
+.footer__legal .socials svg { width: 18px; height: 18px; }
+@media (pointer: coarse), (max-width: 1023px) { .footer__legal .socials a { width: 44px; height: 44px; min-width: 44px; } }
+
+/* ---------- Type: Bricolage Grotesque headings (600), Figtree text ---------- */
+/* long passages set in the display face read better a step lighter than the headings */
+.about-statement, .mo-wh__text, .feature-quote, .quote blockquote, .footer__lede { font-weight: 500; }
+.footer__lede { letter-spacing: -0.01em; }
+/* card and list titles stay in Figtree, a touch firmer */
+.card > h3, .card--plan h3, .tile__head h3, .menu-card .t-card { font-weight: 600; }
+/* large headings: a little tighter; Bricolage sizes its letter shapes to the type size */
+h1, h2 { font-optical-sizing: auto; text-wrap: balance; }
+.hero h1 { letter-spacing: var(--display-tracking-xl); }
+/* small print that was too small on phones */
+.plan-grid .rows small { font-size: 0.8125rem; }
+.plan-grid .plan-note { font-size: 0.875rem; }
+.about-facts dt, .quote-card figcaption, .gym-panel__title .muted { font-size: 0.875rem; }
+/* body text: a little more line spacing on phones */
+@media (max-width: 639px) { main p { line-height: 1.6; } }
+/* Bricolage is already compact at large sizes: open the tracking back up */
+:root { --display-tracking: -0.01em; --display-tracking-xl: -0.015em; }
+.hero h1, .price-head h1 { letter-spacing: -0.015em; }
+.gym-panel__title .muted { font-family: var(--font-text); font-weight: 400; }
+@media (max-width: 639px) { .gym-switch { width: 100%; } .gym-switch button { white-space: nowrap; } }
+.hero h1, .price-head h1 { letter-spacing: 0; }
+:root { --display-tracking: -0.005em; --display-tracking-xl: 0em; }
+
+/* home hero on tablets and phones: a taller photograph, and the words on a cream panel that slides up
+   over its bottom edge with rounded top corners, so the photo and the words read as one piece */
+@media (max-width: 1023px) {
+  main > section.hero--photo { --photo: 58svh; --lift: 36px; display: block; height: auto; min-height: 0; padding: var(--nav, 72px) 0 0; }
+  main > section.hero--photo > .hero__bg { position: relative; top: 0; display: block; height: var(--photo); }
+  main > section.hero--photo > .wrap {
+    position: relative; z-index: 1; height: auto; margin-top: calc(-1 * var(--lift));
+    padding-top: var(--s-7); padding-bottom: var(--sec-y);
+    background: var(--bg); border-radius: 28px 28px 0 0; box-shadow: 0 -10px 30px rgb(0 0 0 / .12);
+  }
+  main > section.hero--photo > .wrap > .hero-text { height: auto; min-height: 0; }
+}
+@media (max-width: 639px) {
+  main > section.hero--photo { --photo: 50svh; --lift: 28px; }
+  main > section.hero--photo > .wrap { padding-top: var(--s-6); border-radius: 24px 24px 0 0; }
+}
+@media (max-width: 1023px) {
+  /* the panel runs edge to edge; the words keep the page's own side margins inside it */
+  main > section.hero--photo > .wrap { width: 100%; max-width: none; margin-inline: 0; padding-inline: max(var(--gut), (100% - var(--container)) / 2); display: block; }
+  /* the darkened photo is for white words on desktop; here nothing sits on it */
+  main > section.hero--photo > .hero__bg { filter: brightness(1.3) saturate(1.05); }
+}
+@media (max-width: 639px) { main > section.hero--photo { --photo: 46svh; } }
+@media (max-width: 1023px) {
+  /* rounded photo set in from the screen edges; the cream panel overlaps its foot at the same width */
+  main > section.hero--photo > .hero__bg { width: auto; margin: var(--s-3) var(--gut) 0; border-radius: var(--r-lg, 20px); }
+  main > section.hero--photo > .wrap { width: auto; margin-inline: var(--gut); padding-inline: var(--s-6); box-shadow: none; }
+}
+@media (max-width: 639px) { main > section.hero--photo > .wrap { padding-inline: var(--s-5); } }
+@media (max-width: 1023px) {
+  main > section.hero--photo > .hero__bg { width: calc(100% - 2 * var(--gut)); }
+  main > section.hero--photo > .wrap { padding-inline: var(--s-5); }
+}
+@media (max-width: 639px) { main > section.hero--photo > .wrap { padding-inline: var(--s-4); } }
+
+/* home hero (desktop): the facts row sits in the flow under the words instead of pinned to the bottom,
+   so on short laptop screens it can never run into the buttons; the heading also scales with the height */
+@media (min-width: 1024px) {
+  main > section.hero--photo[data-calm] > .wrap > .hero-text { justify-content: flex-start; }
+  main > section.hero--photo[data-calm] .hero__text { margin-block: auto; }
+  main > section.hero--photo[data-calm] .hero__facts { position: static; margin-top: var(--s-7); }
+  main > section.hero--photo h1 { font-size: min(var(--ly-h1-xl), 11svh); }
+}
+/* the overlapping card in Lauren's soft lilac: rounded all round, ending under the buttons */
+@media (max-width: 1023px) {
+  main > section.hero--photo { padding-bottom: var(--s-6); }
+  main > section.hero--photo > .wrap { background: var(--p-surface); border-radius: 28px; padding-bottom: var(--s-7); }
+  main > section.hero--photo .btn--secondary { background: var(--p-bg); }
+}
+@media (max-width: 639px) {
+  main > section.hero--photo > .wrap { border-radius: 24px; padding-bottom: var(--s-5); }
+}

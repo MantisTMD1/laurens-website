@@ -1,0 +1,21 @@
+{
+  "name": "laurens-website",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "playwright test",
+    "partials": "node scripts/partials.mjs",
+    "partials:check": "node scripts/partials.mjs --check",
+    "pretest": "node scripts/partials.mjs --check",
+    "share": "node scripts/share.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "private": "true",
+  "devDependencies": {
+    "@playwright/test": "^1.65.1"
+  }
+}
