@@ -50,3 +50,15 @@ if (!reduced && 'IntersectionObserver' in window) {
   // never leave anything hidden: printing or a jump link shows everything at once
   addEventListener('beforeprint', () => todo.forEach(([el]) => done(el)));
 }
+
+// "Back to top" in the footer: a smooth scroll (instant with reduced motion), then focus moves to the
+// top of the page so keyboard and screen-reader users land there too. Without script it is a #top link.
+for (const a of document.querySelectorAll('[data-to-top]')) {
+  a.addEventListener('click', (e) => {
+    e.preventDefault();
+    scrollTo({ top: 0, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+    const top = document.getElementById('top');
+    if (top) { if (!top.hasAttribute('tabindex')) top.setAttribute('tabindex', '-1'); top.focus({ preventScroll: true }); }
+    history.replaceState(null, '', location.pathname + location.search);
+  });
+}
