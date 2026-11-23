@@ -73,14 +73,22 @@ function nav() {
   const nav = document.querySelector('.nav');
   if (!nav) return;
   const toggle = nav.querySelector('.nav__toggle');
-  const bars = '<svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M2 5h14M2 13h14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>';
-  const cross = '<svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M4 4l10 10M14 4L4 14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>';
-  const setOpen = open => {
-    nav.classList.toggle('is-open', open);
+  // Fit Lab: the icon's two bars turn into a cross in CSS (no swap), and closing plays out before the sheet hides
+  const calm = matchMedia('(prefers-reduced-motion: reduce)');
+  let closing = 0;
+  const isOpen = () => nav.classList.contains('is-open') && !nav.classList.contains('is-closing');
+  const setOpen = (open, now = false) => {
+    clearTimeout(closing);
+    if (open) nav.classList.remove('is-closing');
+    nav.classList.toggle('is-open', open || (!now && !calm.matches && nav.classList.contains('is-open')));
+    if (!open && nav.classList.contains('is-open')) {
+      nav.classList.add('is-closing');
+      closing = setTimeout(() => nav.classList.remove('is-open', 'is-closing'), 280);
+    }
     document.body.classList.toggle('nav-locked', open);
-    if (toggle) { toggle.setAttribute('aria-expanded', String(open)); toggle.innerHTML = open ? cross : bars; }
+    if (toggle) toggle.setAttribute('aria-expanded', String(open));
   };
-  toggle?.addEventListener('click', () => setOpen(!nav.classList.contains('is-open')));
+  toggle?.addEventListener('click', () => setOpen(!isOpen()));
   nav.querySelectorAll('.nav__item').forEach(item => {
     if (!item.querySelector('.nav__menu')) return;
     let btn = item.querySelector('.nav__expand');
@@ -102,15 +110,15 @@ function nav() {
   });
   document.addEventListener('keydown', e => {
     if (e.key !== 'Escape') return;
-    if (nav.classList.contains('is-open')) { setOpen(false); toggle?.focus(); return; }
+    if (isOpen()) { setOpen(false); toggle?.focus(); return; }
     if (nav.contains(document.activeElement)) document.activeElement.blur();
   });
   // a tap on any link in the open sheet closes it (a top-level word, a menu link, an action, an
   // in-page #anchor alike), so the page it leads to is never left under the sheet
   nav.addEventListener('click', e => {
-    if (nav.classList.contains('is-open') && e.target.closest?.('a[href]')) setOpen(false);
+    if (isOpen() && e.target.closest?.('a[href]')) setOpen(false);
   });
-  window.matchMedia('(min-width: 1024px)').addEventListener('change', e => { if (e.matches) setOpen(false); });
+  window.matchMedia('(min-width: 1024px)').addEventListener('change', e => { if (e.matches) setOpen(false, true); });
 }
 
 function tabs() {
