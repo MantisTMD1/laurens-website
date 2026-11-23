@@ -379,3 +379,9 @@ main .mo-wh strong .mo-w.is-on { color: var(--accent); }
 .to-top:hover svg { translate: 0 -2px; }
 .to-top:active { scale: .97; }
 @media (pointer: coarse), (max-width: 1023px) { .to-top { height: 44px; } }
+/* on click the arrow flies out of the top and comes back in from below */
+.to-top { overflow: hidden; }
+@media (prefers-reduced-motion: no-preference) {
+  .to-top.is-going svg { animation: to-top-lift 600ms cubic-bezier(.5,0,.2,1); }
+}
+@keyframes to-top-lift { 45% { transform: translateY(-30px); opacity: 0; } 46% { transform: translateY(30px); opacity: 0; } 100% { transform: none; opacity: 1; } }

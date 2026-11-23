@@ -51,14 +51,34 @@ if (!reduced && 'IntersectionObserver' in window) {
   addEventListener('beforeprint', () => todo.forEach(([el]) => done(el)));
 }
 
-// "Back to top" in the footer: a smooth scroll (instant with reduced motion), then focus moves to the
-// top of the page so keyboard and screen-reader users land there too. Without script it is a #top link.
+// "Back to top" in the footer: the arrow lifts off and the page glides up, slow at both ends (0.7 to 1.4s by
+// distance). A wheel, touch, key or press stops it. Reduced motion jumps. Focus moves to the top once there.
+// Without script it is a plain #top link.
 for (const a of document.querySelectorAll('[data-to-top]')) {
+  let stop = null;
   a.addEventListener('click', (e) => {
+    if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
     e.preventDefault();
-    scrollTo({ top: 0, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
-    const top = document.getElementById('top');
-    if (top) { if (!top.hasAttribute('tabindex')) top.setAttribute('tabindex', '-1'); top.focus({ preventScroll: true }); }
-    history.replaceState(null, '', location.pathname + location.search);
+    stop?.();
+    const land = () => {
+      const top = document.getElementById('top');
+      if (top) { if (!top.hasAttribute('tabindex')) top.setAttribute('tabindex', '-1'); top.focus({ preventScroll: true }); }
+    };
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) { scrollTo(0, 0); land(); return; }
+    const from = scrollY, ms = Math.min(1400, Math.max(700, from * 0.35));
+    const ease = (t) => (t < .5 ? 4 * t ** 3 : 1 - (-2 * t + 2) ** 3 / 2);
+    const events = ['wheel', 'touchstart', 'keydown', 'pointerdown'];
+    let raf = 0, t0 = 0;
+    stop = () => { cancelAnimationFrame(raf); events.forEach((n) => removeEventListener(n, stop)); a.classList.remove('is-going'); stop = null; };
+    events.forEach((n) => addEventListener(n, stop, { passive: true }));
+    a.classList.add('is-going');
+    const step = (now) => {
+      t0 ||= now;
+      const t = Math.min(1, (now - t0) / ms);
+      scrollTo({ top: from * (1 - ease(t)), behavior: 'instant' });
+      if (t < 1) raf = requestAnimationFrame(step);
+      else { stop(); land(); }
+    };
+    raf = requestAnimationFrame(step);
   });
 }
