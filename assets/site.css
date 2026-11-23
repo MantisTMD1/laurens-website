@@ -385,3 +385,44 @@ main .mo-wh strong .mo-w.is-on { color: var(--accent); }
   .to-top.is-going svg { animation: to-top-lift 600ms cubic-bezier(.5,0,.2,1); }
 }
 @keyframes to-top-lift { 45% { transform: translateY(-30px); opacity: 0; } 46% { transform: translateY(30px); opacity: 0; } 100% { transform: none; opacity: 1; } }
+
+/* Lauren's outdoor portrait: the file ends at her hairline, so it always keeps its top edge, and phones
+   show the whole square (home #lauren and About #life) */
+#lauren .trio__photo:first-child img { object-position: 50% 0; }
+main .about-portrait > img { object-position: 50% 0; }
+@media (max-width: 639px) {
+  #lauren .trio > .trio__photo:first-child { aspect-ratio: 1; }
+  main #life .split-photo.about-portrait { aspect-ratio: 1; }
+}
+
+/* phone menu: no short current-page line under a word (the desktop bar keeps its underline) */
+@media (max-width: 1023px) { header.nav.is-open .nav__links .nav__link::after { display: none !important; } }
+
+/* jump links land below the fixed nav bar: a section with no top padding of its own (it follows another on
+   the same ground) also keeps some air above its heading */
+main > section.section:not(.hero) { scroll-margin-top: calc(var(--nav, 72px) - 1px); }
+main > section.section:not(.hero):not(.ground-inverse) + section.section:not(.ground-inverse) { scroll-margin-top: calc(var(--nav, 72px) + 40px); }
+main > section#lauren + section.section { scroll-margin-top: calc(var(--nav, 72px) - 1px); }
+main .gym-panel[id] { scroll-margin-top: calc(var(--nav, 72px) + 40px); }
+@media (max-width: 639px) {
+  main > section.section:not(.hero):not(.ground-inverse) + section.section:not(.ground-inverse) { scroll-margin-top: calc(var(--nav, 56px) + 28px); }
+  main > section#lauren + section.section { scroll-margin-top: calc(var(--nav, 56px) - 1px); }
+}
+
+/* ---------- Book A Session page ---------- */
+.book-layout { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); grid-template-rows: auto 1fr; }
+.book-layout .book-form { padding: var(--s-7); }
+.book-layout .login__head a { text-decoration: underline; text-underline-offset: 3px; }
+.book__new { margin-top: var(--s-4); }
+.book-form > p { margin-top: 0; }
+.book-form .field { align-content: start; }
+.book-form .form__status:empty { display: none; }
+.book-form input[type="date"] { -webkit-appearance: none; appearance: none; min-width: 0; width: 100%; text-align: left; }
+@media (min-width: 1024px) and (max-width: 1179px) { .nav__bar .nav__links { gap: 0; } }
+@media (max-width: 1023px) {
+  .book-layout { grid-template-columns: 1fr; grid-template-rows: none; }
+  .book-layout .book-photo { margin-top: 0; aspect-ratio: 16 / 9; }
+}
+@media (max-width: 639px) { .book-layout .book-form { padding: var(--s-5); } }
+.nav__link .chev { flex: none; }
+@media (min-width: 1024px) and (max-width: 1179px) { .nav__bar .nav__links > .nav__item > .nav__link { padding-inline: 6px; white-space: nowrap; } }

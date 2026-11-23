@@ -305,7 +305,7 @@ test.describe('Client login page', () => {
 });
 
 test.describe('Launch readiness', () => {
-  const pages = ['/', '/about.html', '/benefits.html', '/testimonials.html', '/pricing.html', '/login.html'];
+  const pages = ['/', '/about.html', '/benefits.html', '/testimonials.html', '/pricing.html', '/login.html', '/book-a-session.html'];
 
   test('no page loads images from the old WordPress site', async ({ page }) => {
     for (const p of pages) {
@@ -331,5 +331,62 @@ test.describe('Launch readiness', () => {
     const data = JSON.parse(await page.locator('script[type="application/ld+json"]').textContent() || '{}');
     const gyms = data['@graph'].filter((x) => x['@type'] === 'ExerciseGym');
     expect(gyms.map((g) => g.address.addressLocality).sort()).toEqual(['Johnson Creek', 'Wales']);
+  });
+});
+
+test.describe('Jump links', () => {
+  for (const from of ['index', 'about', 'pricing']) {
+    test(`Book a trial session from ${from} lands below the nav bar`, async ({ page }) => {
+      await page.goto(`/${from}.html`);
+      await page.locator('.nav__actions .btn--primary').click();
+      await expect(page).toHaveURL(/#start$/);
+      await page.waitForTimeout(800);
+      const { heading, nav } = await page.evaluate(() => ({
+        heading: document.querySelector('#start h2').getBoundingClientRect().top,
+        nav: document.querySelector('.nav').getBoundingClientRect().bottom,
+      }));
+      expect(heading).toBeGreaterThan(nav + 8);
+      expect(heading).toBeLessThan(nav + 120);
+    });
+  }
+});
+
+test.describe('Book A Session page', () => {
+  test.beforeEach(async ({ page }) => { await page.goto('/book-a-session.html'); });
+
+  test('shows one h1 and never scrolls sideways', async ({ page }) => {
+    await expect(page.locator('h1')).toHaveText('Book A Session');
+    expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(0);
+  });
+
+  test('asks for every required field and leaves the optional ones alone', async ({ page }) => {
+    await page.locator('.book-form [type=submit]').click();
+    await expect(page.locator('.book-form .field__error:visible')).toHaveCount(6);
+    await expect(page.locator('[data-form-status]')).toHaveText('6 fields to fix.');
+    await expect(page.locator('#b-phone')).not.toHaveAttribute('aria-invalid', 'true');
+  });
+
+  test('turns down a date in the past', async ({ page }) => {
+    await page.locator('#b-date').fill('2020-01-01');
+    await page.locator('.book-form [type=submit]').click();
+    await expect(page.locator('#b-date-err')).toBeVisible();
+  });
+
+  test('a filled form passes the checks and is sent', async ({ page }) => {
+    await page.route('**/test-endpoint', (r) => r.fulfill({ status: 200, body: '{}' }));
+    await page.locator('.book-form').evaluate((f) => { f.dataset.endpoint = '/test-endpoint'; });
+    await page.fill('#b-name', 'Test Person'); await page.fill('#b-email', 'test@example.com');
+    await page.selectOption('#b-gym', 'Wales'); await page.selectOption('#b-type', 'Duo');
+    await page.fill('#b-date', '2099-01-05'); await page.selectOption('#b-time', 'Morning');
+    await page.locator('.book-form [type=submit]').click();
+    await expect(page.locator('[data-form-status]')).toContainText('Your session request is in');
+  });
+
+  test('every page links here from the menu and the footer', async ({ page }) => {
+    for (const p of ['/', '/about.html', '/benefits.html', '/testimonials.html', '/pricing.html', '/login.html']) {
+      await page.goto(p);
+      await expect(page.locator('.nav__links a[href="book-a-session.html"]')).toHaveCount(1);
+      await expect(page.locator('.footer a[href="book-a-session.html"]')).toHaveCount(1);
+    }
   });
 });

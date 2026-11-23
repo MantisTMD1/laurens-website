@@ -15,7 +15,7 @@ if (!reduced && 'IntersectionObserver' in window) {
   ];
   // single blocks
   const singles = [
-    '.split-photo:not([data-moment])', '#start .form', '.about-book', '#certifications h2',
+    '.split-photo:not([data-moment])', '.about-book', '#certifications h2',
   ];
 
   const items = [];
